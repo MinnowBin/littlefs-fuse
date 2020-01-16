@@ -32,6 +32,7 @@ static bool format = false;
 static bool migrate = false;
 static lfs_t lfs;
 
+#define MY_CFG_TRACE	(1)
 
 // actual fuse functions
 void lfs_fuse_defaults(struct lfs_config *config) {
