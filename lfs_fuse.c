@@ -35,29 +35,48 @@ static lfs_t lfs;
 
 // actual fuse functions
 void lfs_fuse_defaults(struct lfs_config *config) {
+#if MY_CFG_TRACE
+    printf("block_count = %d\n", config->block_count);
+    printf("block_size = %d\n", config->block_size);
+#endif
     // default to 512 erase cycles, arbitrary value
     if (!config->block_cycles) {
         config->block_cycles = 512;
     }
+#if MY_CFG_TRACE
+    printf("block_cycles = %d\n", config->block_cycles);
+#endif
 
     // defaults, ram is less of a concern here than what
     // littlefs is used to, so these may end up a bit funny
     if (!config->prog_size) {
         config->prog_size = config->block_size;
     }
+#if MY_CFG_TRACE
+    printf("prog_size = %d\n", config->prog_size);
+#endif
 
     if (!config->read_size) {
         config->read_size = config->block_size;
     }
+#if MY_CFG_TRACE
+    printf("read_size = %d\n", config->read_size);
+#endif
 
     if (!config->cache_size) {
         config->cache_size = config->block_size;
     }
+#if MY_CFG_TRACE
+    printf("cache_size = %d\n", config->cache_size);
+#endif
 
     // arbitrary, though we have a lot of RAM here
     if (!config->lookahead_size) {
         config->lookahead_size = 8192;
     }
+#if MY_CFG_TRACE
+    printf("lookahead_size = %d\n", config->lookahead_size);
+#endif
 }
 
 void *lfs_fuse_init(struct fuse_conn_info *conn) {
@@ -487,6 +506,14 @@ int main(int argc, char *argv[]) {
         fprintf(stderr, "missing device parameter\n");
         exit(1);
     }
+
+    config.read_size = 256;
+    config.prog_size = 256;
+    config.block_size = 4096;
+    config.block_count = 512;
+    config.cache_size = 256;
+    config.lookahead_size = 16;
+    config.block_cycles = 100;
 
     if (format) {
         // format time, no mount
